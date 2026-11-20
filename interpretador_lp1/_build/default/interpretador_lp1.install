@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/interpretador_lp1/META"
+  "_build/install/default/lib/interpretador_lp1/dune-package"
+  "_build/install/default/lib/interpretador_lp1/opam"
+]
+bin: [
+  "_build/install/default/bin/interpretador_lp1.exe"
+]

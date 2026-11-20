@@ -1,0 +1,3 @@
+(test
+ (name test_interpretador_lp1)
+ (libraries interpretador_lp1))
