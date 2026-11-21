@@ -5,7 +5,7 @@ open Parser
 open TypeInfer
 open Eval
 
-(* ==== Interpretador =====  *)
+(* ==== Funções auxiliares para imprimir resultados =====  *)
 
 let string_of_value (v: value) : string =
   match v with 
@@ -22,7 +22,8 @@ let rec string_of_type (t : tp) : string =
   | TUnit -> "Tunit"
   | TRef x -> "ref " ^ string_of_type x
     
-      
+(* ==== Interpretador =====  *)
+
 let interpreter (codigo : string) : string = 
   try
     let ast = parse_string codigo in
@@ -41,4 +42,3 @@ let () =
   print_endline (interpreter "let x : int = 42 in { x }");
   print_endline (interpreter "let r : ref int = new 10 in { r }");
   print_endline (interpreter "let x : int = true in { x }") (* Deve acusar Erro de tipo *)
-
