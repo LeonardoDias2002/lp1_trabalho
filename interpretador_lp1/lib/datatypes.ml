@@ -1,4 +1,4 @@
-(* ===== Datatypes para ASTs, tipos, memória e ambiente de execução =====  *) 
+(* ===== Datatypes para Tipos, Operações Binárias e ASTs =====  *) 
 
 type tp =
   | TInt
@@ -36,20 +36,8 @@ type ast =
   | Whi of ast * ast 
   | Loc of int
 
-type value = 
-  | VNum of int
-  | VBool of bool 
-  | VUnit
-  | VLoc of int
-and runEnv = 
-  (string * value) list 
-      
-type memory = (int * value) list
 
-type tyenv = (string * tp)  list
-
-(* funções auxiliares *)
-
+(* ===== Funções auxiliares de inserção e busca em listas =====  *) 
 let insert k v lst = (k, v) :: lst
 
 let rec lookup k lst = 
@@ -58,8 +46,7 @@ let rec lookup k lst =
   | (k', v) :: t -> if k = k' then Some v else lookup k t 
 
 
-
-(* temporário *)
+(* ===== Datatype para Tokens =====  *) 
 type token =
   | ID of string
   | NUM of int

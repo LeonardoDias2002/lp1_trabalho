@@ -1,8 +1,19 @@
 open Datatypes
 
-exception RunTimeError of string (* erro a ser reportado para o usuário do interpretador *)  
+(* =====  Valores, Ambiente de Execução e Memória =====  *) 
+type value = 
+  | VNum of int
+  | VBool of bool 
+  | VUnit
+  | VLoc of int
+and runEnv = 
+  (string * value) list 
+      
+type memory = (int * value) list
+
+exception RunTimeError of string (* erro de execução a ser reportado para o usuário do interpretador *)  
     
-            
+(* ===== Funções auxiliares de manipulação de memória =====  *) 
 let insertMem v lst =
   let next_loc = List.length lst in
   (next_loc, v) :: lst
@@ -12,10 +23,8 @@ let rec updateMem l v (m: memory) =
   | [] -> raise (RunTimeError "Endereço não encontrado para atualização")
   | (l', v') :: t -> if l = l' then (l, v) :: t else (l', v') :: updateMem l v t      
 
-(* === Avaliador ==== *)
 
-                                  
-(* implementa semantica big step *)                        
+(* === Avaliador com semântica big step ==== *)                       
 let rec eval (r: runEnv) (e:ast) (m:memory): value * memory  = 
   match e with
   | Num n   -> (VNum n, m)

@@ -1,6 +1,7 @@
 open Datatypes
 open Scanner
 
+(* ===== Funções auxiliares para reconhecimento do conjunto Follow =====  *) 
 let is_follow_El tok = (* é que segue E  *) 
   match tok with 
   | EOF | THEN | ELSE | RBRAC | IN | DO | RPAR -> true  (* o que segue E  *) 
@@ -25,7 +26,7 @@ let is_follow_Emull tok = (* é o  que segue E_mul, ou seja follow de Eaddl  e f
   is_follow_Eaddl tok || tok = SUM || tok = SUB (* SUM e SUB sao first de Eaddl *)
 
   
-                                                
+(* ===== Analisa a sintaxe dos tipos =====  *)                         
 let rec parse_T (tokens : token list) : tp * token list = 
   match tokens with
   | TINT :: rest -> (TInt, rest)
@@ -41,7 +42,6 @@ let rec parse_E (tokens : token list) : ast * token list  =
   parse_El e1 rest 
                    
 (* El -> ";" Ec El | ε *)
-
 and parse_El (lhs : ast) (tokens: token list) :  ast * token list =
   match tokens with 
   | SEQ :: rest -> (* consome SEQ *)
@@ -77,8 +77,6 @@ and parse_Ec (tokens: token list) :  ast * token list =
             | _ -> failwith "sintaxe do let mal formulada - falta =")
        | _ -> failwith "sintaxe do let mal formulada - falta id ou :")
                                                                                   
-       (* ...in  (Let (x, ty, e_val, e_body), rest?)   *)
-
   | WHILE :: rest -> failwith "parser de while nao implementado" 
                                                                                   
        (* ...in (Whi (cond, e_body), rest?)   *)      
@@ -87,7 +85,7 @@ and parse_Ec (tokens: token list) :  ast * token list =
            
  (* Easg -> Eor Easgl *)
 and parse_Easg (tokens : token list) : ast * token list = 
-(* código temporário apenas para testes *)
+(* código temporário apenas para testes, remover quando implementar *)
 parse_Eun tokens
   
 
@@ -158,18 +156,16 @@ and parse_Eatm (tokens : token list) : ast * token list =
   | _ -> failwith "erro de sintaxe - valor atomico não reconhecido"
     
         
-    (*====================*)      
+    
 
-
+(* ===== Função principal de parsing =====  *) 
 let parse (tokens: token list) : ast =
   let (ast_E, resto_tokens) = parse_E tokens in
   match resto_tokens with
   | [EOF] -> ast_E
   | _ -> failwith "há tokens sobrando" 
 
-
+(* ===== Função para analisar uma string com Scanner e Parser =====  *) 
 let parse_string (input:string) : ast =
   let tokens : token list = scan input in
   parse tokens
-      
-let teste = [TRUE; FALSE; NUM 5; ID "ab"; LPAR; RPAR; LPAR; NUM 10; RPAR; EOF]

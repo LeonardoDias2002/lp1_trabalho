@@ -1,9 +1,12 @@
 open Datatypes  
 
-exception TypeError of string  (* erro a ser reportado para o usuário do interpretador *)
+(* ===== Ambiente de Tipos =====  *) 
+type tyenv = (string * tp)  list
 
+exception TypeError of string  (* erro de tipo a ser reportado para o usuário do interpretador *)
 
 (* type_of pode ativar exceçao TypeError *) 
+(* ===== Função para inferir o tipo de uma expressão em um ambiente de tipos =====  *) 
 let rec type_of (g:tyenv) (e:ast) : tp =
   match e with
   | Num _  -> TInt

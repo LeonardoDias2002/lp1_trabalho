@@ -1,5 +1,7 @@
 open Datatypes
 
+(* ===== Função para reconhcer palavras chave e identificadores =====  *) 
+
 let to_id_or_kw s =
   match s with
   | "true"  -> TRUE
@@ -22,17 +24,19 @@ let to_id_or_kw s =
 
 exception Erro_Lexico of int
 
+(* ===== Reconhece intervalo de letras e dígitos =====  *) 
+
 let is_letter c = c >= 'a' && c <= 'z'
 let is_digit  c = c >= '0' && c <= '9'
 
-(* Consome o sufixo de um identificador. *)
+(* Consome o sufixo de um identificador *)
 let rec scan_id input pos =
   if pos < String.length input &&
      (is_letter input.[pos] || is_digit input.[pos])
   then scan_id input (pos + 1)
   else pos
 
-(* Consome os sufixo de um numero. *)
+(* Consome os sufixo de um numero *)
 let rec scan_nro input pos =
   if pos < String.length input && is_digit input.[pos]
   then scan_nro input (pos + 1)
@@ -106,4 +110,5 @@ let rec scan_from input pos =
   | EOF -> [EOF]
   | _ -> tok :: (scan_from input next)
 
+(* ===== Gera uma lista de tokens começando na posição 0 da entrada =====  *) 
 let scan input = scan_from input 0
