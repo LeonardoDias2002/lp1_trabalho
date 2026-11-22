@@ -1,0 +1,1 @@
+let x : ref ref bool = new (new true) in { x }
