@@ -91,8 +91,6 @@ let rec eval (r: runEnv) (e:ast) (m:memory): value * memory  =
        | None -> raise (RunTimeError ("Variavel nao declarada: " ^ x)))
 
   | Seq(e1, e2) -> let (v1, m1) = eval r e1 m in
-      if v1 <> VUnit then raise (RunTimeError "Primeira expressão da sequência não produz Unit") 
-      else 
         eval r e2 m1
         
   | Whi(e1, e2) -> 
@@ -101,7 +99,5 @@ let rec eval (r: runEnv) (e:ast) (m:memory): value * memory  =
        | VBool false -> (VUnit, m1)
        | VBool true -> 
            let (v2, m2) = eval r e2 m1 in
-           if v2 <> VUnit then raise (RunTimeError "Expressão do while não produz Unit")
-           else
              eval r (Whi(e1, e2)) m2
        | _ -> raise (RunTimeError "Condicao do while nao e booleana"))
