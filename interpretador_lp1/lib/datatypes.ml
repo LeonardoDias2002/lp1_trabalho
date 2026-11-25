@@ -12,8 +12,8 @@ type bop =
   | Eq
   | Lt
   | Gt
- (* | Le
-  | Ge *)
+  | Le
+  | Ge
   | Sum
   | Sub
   | Mul

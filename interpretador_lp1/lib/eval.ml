@@ -45,6 +45,8 @@ let rec eval (r: runEnv) (e:ast) (m:memory): value * memory  =
        | (Eq, VNum n1, VNum n2)  -> (VBool(n1 = n2), m2)
        | (Gt, VNum n1, VNum n2)  -> (VBool(n1 > n2), m2)
        | (Lt, VNum n1, VNum n2)  -> (VBool(n1 < n2), m2)
+       | (Le, VNum n1, VNum n2)  -> (VBool(n1 <= n2), m2)
+       | (Ge, VNum n1, VNum n2)  -> (VBool(n1 >= n2), m2)
        | _ -> raise (RunTimeError "Tentativa de executar operaçao binária com operandos invalidos" )) 
     
   | If(e1,e2,e3) ->  

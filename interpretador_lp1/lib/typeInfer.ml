@@ -22,7 +22,7 @@ let rec type_of (g:tyenv) (e:ast) : tp =
        | Sum | Sub | Mul | Div ->
            if t1 = TInt && t2 = TInt then TInt
            else raise (TypeError "Operadores aritméticos requerem operandos inteiros")
-       | Eq | Lt | Gt ->
+       | Eq | Lt | Gt | Le | Ge ->
            if t1 = TInt && t2 = TInt then TBool
            else raise (TypeError "Operadores relacionais requerem operandos inteiros")
        | And | Or  ->
