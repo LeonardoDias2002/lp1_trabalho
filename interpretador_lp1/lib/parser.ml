@@ -60,9 +60,20 @@ and parse_El (lhs : ast) (tokens: token list) :  ast * token list =
 *)
 and parse_Ec (tokens: token list) :  ast * token list = 
   match tokens with 
-  | IF :: rest ->  failwith "parser de if nao implementado"
+  | IF :: rest ->
+      let (cond, rest1) = parse_E rest in
+      (match rest1 with
+       | THEN :: rest2 ->
+           let (e_then, rest3) = parse_E rest2 in
+           (match rest3 with
+            | ELSE :: LBRAC :: rest4 ->
+                let (e_else, rest5) = parse_E rest4 in
+                (match rest5 with
+                 | RBRAC :: rest6 -> (If (cond, e_then, e_else), rest6)
+                 | _ -> failwith "sintaxe do if mal formulada - falta }")
+            | _ -> failwith "sintaxe do if mal formulada - falta else ou {")
+       | _ -> failwith "sintaxe do if mal formulada - falta then")
   
-
   | LET :: rest -> 
       (match rest with
        | ID x :: COLON :: rest1 -> let (t, rest2) = parse_T rest1 in
@@ -77,24 +88,45 @@ and parse_Ec (tokens: token list) :  ast * token list =
             | _ -> failwith "sintaxe do let mal formulada - falta =")
        | _ -> failwith "sintaxe do let mal formulada - falta id ou :")
                                                                                   
-  | WHILE :: rest -> failwith "parser de while nao implementado" 
-                                                                                  
-       (* ...in (Whi (cond, e_body), rest?)   *)      
-    
+  | WHILE :: rest ->
+      let (cond, rest1) = parse_E rest in
+      (match rest1 with
+       | DO :: rest2 ->
+           (match rest2 with
+            | LBRAC :: rest3 ->
+                let (corpo, rest4) = parse_E rest3 in
+                (match rest4 with
+                 | RBRAC :: rest5 -> (Whi (cond, corpo), rest5)
+                 | _ -> failwith "sintaxe do while mal formulada - falta }")
+            | _ -> failwith "sintaxe do while mal formulada - falta {")
+       | _ -> failwith "sintaxe do while mal formulada - falta do")
+                                                                
   | _ -> parse_Easg tokens
            
  (* Easg -> Eor Easgl *)
-and parse_Easg (tokens : token list) : ast * token list = 
-(* código temporário apenas para testes, remover quando implementar *)
-parse_Eun tokens
-  
+and parse_Easg (tokens : token list) : ast * token list =
+  let (e1, rest) = parse_Eor tokens in
+  parse_Easgl e1 rest
+
 
 (* Easgl -> ":=" Easg | ε  (Associativo à direita) *)
-and parse_Easgl (lhs : ast) (tokens: token list) :  ast * token list = failwith "parser de Easgl nao implementado"
-  
-    
+and parse_Easgl (lhs : ast) (tokens: token list) :  ast * token list =
+  match tokens with
+  | ASG :: rest ->
+      (match lhs with
+       | Id x ->
+           let (e2, rest1) = parse_Easg rest in   (* lado direito lido pelo mesmo nível (Easg): associativo à direita *)
+           (Asg (x, e2), rest1)
+       | _ -> failwith "lado esquerdo da atribuição deve ser uma variável")
+  | tok :: _ when is_follow_Easgl tok ->
+      (lhs, tokens)
+  | _ -> failwith "erro na atribuição Easgl"
+
+
 (* Eor -> Eand Eorl *)
-and parse_Eor (tokens : token list) : ast * token list = failwith "parser de Eor nao implementado" 
+and parse_Eor (tokens : token list) : ast * token list =
+(* código temporário apenas para testes, remover quando implementar *)
+parse_Eun tokens
   
 
 (* Eorl -> "||" Eand Eorl | ε *)
